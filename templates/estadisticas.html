@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Participación por Técnico</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family:Arial; margin:40px; }
+        select, input { padding:5px; }
+    </style>
+</head>
+<body>
+
+<h2>Participación por Técnico</h2>
+
+<a href="/">Nueva Guía</a> |
+<a href="/reportes">Reportes</a> |
+<a href="/estadisticas_edificio">Por Edificio</a>
+
+<br><br>
+
+<form method="GET">
+    Desde:
+    <input type="date" name="inicio" value="{{ inicio }}">
+    Hasta:
+    <input type="date" name="fin" value="{{ fin }}">
+
+    Tipo gráfico:
+    <select id="tipoGrafico">
+        <option value="bar">Barra</option>
+        <option value="pie">Torta</option>
+        <option value="doughnut">Dona</option>
+        <option value="line">Línea</option>
+    </select>
+
+    <button type="submit">Generar</button>
+</form>
+
+<br><br>
+
+<div style="width:30%; margin:auto;">
+    <canvas id="grafico"></canvas>
+</div>
+
+<script>
+
+const labels = {{ labels | tojson }};
+const valores = {{ valores | tojson }};
+
+let chartActual = null;
+
+function generarGrafico(tipo) {
+
+    const ctx = document.getElementById('grafico').getContext('2d');
+
+    if (chartActual) {
+        chartActual.destroy();
+    }
+
+    chartActual = new Chart(ctx, {
+        type: tipo,
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Participaciones',
+                data: valores,
+                backgroundColor: [
+                    '#0072CE',
+                    '#00c3ff',
+                    '#ff6384',
+                    '#36a2eb',
+                    '#ffce56',
+                    '#4bc0c0',
+                    '#9966ff',
+                    '#ff9f40'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'right'
+                }
+            },
+            scales: tipo === 'bar' || tipo === 'line' ? {
+                y: { beginAtZero: true }
+            } : {}
+        }
+    });
+}
+
+// Gráfico inicial
+generarGrafico("bar");
+
+// Cambiar tipo dinámicamente
+document.getElementById("tipoGrafico")
+        .addEventListener("change", function() {
+            generarGrafico(this.value);
+        });
+
+</script>
+
+</body>
+</html>

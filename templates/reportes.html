@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reporte de Guías</title>
+    <style>
+        body { font-family:Arial; margin:40px; }
+        table { width:100%; border-collapse:collapse; }
+        th, td { padding:8px; border:1px solid #ccc; }
+        th { background:#0072CE; color:white; }
+        select, input { padding:5px; }
+        .filtros { margin-bottom:20px; }
+    </style>
+</head>
+<body>
+
+<h2>Reporte de Guías</h2>
+
+<a href="/"><button>Nueva Guía</button></a>
+
+<br><br>
+
+<div class="filtros">
+<form method="GET">
+
+    Edificio:
+    <select name="cliente_id">
+        <option value="">Todos</option>
+        {% for c in clientes %}
+            <option value="{{ c.id }}"
+                {% if cliente_id and cliente_id|int == c.id %}selected{% endif %}>
+                {{ c.nombre }}
+            </option>
+        {% endfor %}
+    </select>
+
+    Desde:
+    <input type="date" name="inicio" value="{{ inicio }}">
+
+    Hasta:
+    <input type="date" name="fin" value="{{ fin }}">
+
+    <button type="submit">Filtrar</button>
+
+</form>
+</div>
+
+<table>
+<tr>
+    <th>N°</th>
+    <th>Fecha</th>
+    <th>Edificio</th>
+    <th>Estado</th>
+    <th>Acciones</th>
+</tr>
+
+{% for g in guias %}
+<tr>
+    <td>{{ g.numero_guia }}</td>
+    <td>{{ g.fecha }}</td>
+    <td>{{ g.cliente }}</td>
+    <td>{{ g.estado }}</td>
+    <td>
+        <a href="/pdf/{{ g.id }}" target="_blank">PDF</a> |
+        <a href="/?editar={{ g.id }}">Editar</a>
+    </td>
+</tr>
+{% endfor %}
+
+</table>
+
+</body>
+</html>

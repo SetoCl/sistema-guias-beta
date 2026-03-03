@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Control de Guías</title>
+
+    <style>
+        body {
+            background:#1e1f26;
+            color:white;
+            font-family:Arial;
+            margin:40px;
+        }
+
+        .nav-bar {
+            margin-bottom: 25px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        form {
+            background:#2a2c36;
+            padding:25px;
+            border-radius:8px;
+            max-width:750px;
+        }
+
+        input, select, textarea {
+            width:100%;
+            padding:8px;
+            margin-bottom:12px;
+            border-radius:5px;
+            border:none;
+        }
+
+        button {
+            background:#00c3ff;
+            border:none;
+            padding:8px 15px;
+            border-radius:5px;
+            font-weight:bold;
+            cursor:pointer;
+        }
+
+        button:hover {
+            background:#0099cc;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- 🔵 Barra de navegación -->
+<div class="nav-bar">
+    <a href="/"><button type="button">Nueva Guía</button></a>
+    <a href="/reportes"><button type="button">Reportes</button></a>
+    <a href="/estadisticas"><button type="button">Est. Técnicos</button></a>
+    <a href="/estadisticas_edificio"><button type="button">Est. Edificios</button></a>
+</div>
+
+<h2>Control de Guías</h2>
+
+<form method="POST">
+
+<input type="hidden" name="guia_id" value="{{ guia.id if guia else '' }}">
+
+<label>N° Guía</label>
+<input type="text"
+       value="{{ guia.numero_guia if guia else proximo_numero }}"
+       readonly>
+
+<label>Fecha</label>
+<input type="date"
+       name="fecha"
+       value="{{ guia.fecha if guia else fecha }}">
+
+<label>Cliente</label>
+<select name="cliente_id" id="cliente" onchange="cargarCliente()">
+    <option value="">Seleccione cliente</option>
+    {% for c in clientes %}
+        <option value="{{ c.id }}"
+            {% if guia and guia.cliente_id == c.id %}selected{% endif %}>
+            {{ c.nombre }}
+        </option>
+    {% endfor %}
+</select>
+
+<label>Dirección</label>
+<input type="text"
+       id="direccion"
+       value="{{ guia.direccion if guia else '' }}"
+       readonly>
+
+<label>Property</label>
+<input type="text"
+       id="property"
+       value="{{ guia.property if guia else '' }}"
+       readonly>
+
+<label>Técnicos</label>
+<input type="text"
+       name="tecnicos"
+       value="{{ guia.tecnicos if guia else '' }}">
+
+<label>Técnico Firma</label>
+<input type="text"
+       name="tecnico_firma"
+       value="{{ guia.tecnico_firma if guia else '' }}">
+
+<label>Descripción</label>
+<textarea name="descripcion">{{ guia.descripcion if guia else '' }}</textarea>
+
+<label>Estado</label>
+<select name="estado">
+    <option value="Pendiente"
+        {% if guia and guia.estado == "Pendiente" %}selected{% endif %}>
+        Pendiente
+    </option>
+    <option value="Cerrada"
+        {% if guia and guia.estado == "Cerrada" %}selected{% endif %}>
+        Cerrada
+    </option>
+</select>
+
+<label>Observaciones</label>
+<textarea name="observaciones">{{ guia.observaciones if guia else '' }}</textarea>
+
+<button type="submit">
+    {% if guia %}Actualizar{% else %}Guardar{% endif %}
+</button>
+
+</form>
+
+<script>
+function cargarCliente() {
+
+    const clienteId = document.getElementById("cliente").value;
+
+    if (!clienteId) {
+        document.getElementById("direccion").value = "";
+        document.getElementById("property").value = "";
+        return;
+    }
+
+    fetch("/api/cliente/" + clienteId)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("direccion").value = data.direccion || "";
+            document.getElementById("property").value = data.property || "";
+        });
+}
+
+// Solo ejecutar automáticamente si NO estamos editando
+window.onload = function() {
+    {% if not guia %}
+        cargarCliente();
+    {% endif %}
+};
+</script>
+
+</body>
+</html>
