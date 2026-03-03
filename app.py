@@ -60,15 +60,18 @@ def init_db():
     conn.close()
 
 
+# 🔥 IMPORTANTE: Se ejecuta siempre (local y Render)
+init_db()
+
+
 # =========================================================
-# INDEX (CREAR + EDITAR)
+# INDEX
 # =========================================================
 @app.route("/", methods=["GET", "POST"])
 def index():
 
     conn = get_db()
 
-    # ---------------- POST ----------------
     if request.method == "POST":
 
         guia_id = request.form.get("guia_id")
@@ -125,8 +128,6 @@ def index():
 
             return redirect(url_for("generar_pdf", guia_id=guia_id))
 
-    # ---------------- GET ----------------
-
     guia_id = request.args.get("editar")
     guia = None
 
@@ -159,9 +160,6 @@ def index():
 
 # =========================================================
 # REPORTES
-# =========================================================
-# =========================================================
-# REPORTES CON FILTROS
 # =========================================================
 @app.route("/reportes")
 def reportes():
@@ -209,7 +207,7 @@ def reportes():
 
 
 # =========================================================
-# PDF
+# PDF COMPLETO
 # =========================================================
 @app.route("/pdf/<int:guia_id>")
 def generar_pdf(guia_id):
@@ -238,10 +236,8 @@ def generar_pdf(guia_id):
 
     elements = []
     styles = getSampleStyleSheet()
-
     azul = colors.HexColor("#0072CE")
 
-    # ---------------- ENCABEZADO EMPRESA ----------------
     elements.append(Paragraph("<b>FIBRATEL SPA</b>", styles["Heading2"]))
     elements.append(Paragraph("RUT: 76.xxx.xxx-x", styles["Normal"]))
     elements.append(Paragraph("Santiago, Chile", styles["Normal"]))
@@ -255,11 +251,9 @@ def generar_pdf(guia_id):
     elements.append(linea)
     elements.append(Spacer(1, 20))
 
-    # ---------------- TITULO ----------------
     elements.append(Paragraph("<b>GUÍA DE SERVICIO</b>", styles["Heading1"]))
     elements.append(Spacer(1, 20))
 
-    # ---------------- DATOS PRINCIPALES ----------------
     data = [
         ["N° Guía", str(guia["numero_guia"])],
         ["Fecha", guia["fecha"]],
@@ -280,20 +274,17 @@ def generar_pdf(guia_id):
     elements.append(table)
     elements.append(Spacer(1, 25))
 
-    # ---------------- DESCRIPCIÓN ----------------
     elements.append(Paragraph("<b>Descripción del Servicio</b>", styles["Heading3"]))
     elements.append(Spacer(1, 10))
     elements.append(Paragraph(guia["descripcion"] or "", styles["Normal"]))
     elements.append(Spacer(1, 25))
 
-    # ---------------- OBSERVACIONES ----------------
     if guia["observaciones"]:
         elements.append(Paragraph("<b>Observaciones</b>", styles["Heading3"]))
         elements.append(Spacer(1, 10))
         elements.append(Paragraph(guia["observaciones"], styles["Normal"]))
         elements.append(Spacer(1, 25))
 
-    # ---------------- FIRMAS ----------------
     firma = Table([
         ["__________________________", "__________________________"],
         ["Firma Técnico", "Firma Cliente / Property"]
@@ -323,6 +314,10 @@ def generar_pdf(guia_id):
         mimetype="application/pdf"
     )
 
+
+# =========================================================
+# ESTADISTICAS TECNICOS
+# =========================================================
 @app.route("/estadisticas")
 def estadisticas():
 
@@ -364,6 +359,11 @@ def estadisticas():
                            valores=valores,
                            inicio=inicio,
                            fin=fin)
+
+
+# =========================================================
+# API CLIENTE
+# =========================================================
 @app.route("/api/cliente/<int:cliente_id>")
 def api_cliente(cliente_id):
 
@@ -380,7 +380,11 @@ def api_cliente(cliente_id):
         return jsonify(dict(cliente))
     else:
         return jsonify({"direccion": "", "property": ""})
-    
+
+
+# =========================================================
+# ESTADISTICAS POR EDIFICIO
+# =========================================================
 @app.route("/estadisticas_edificio")
 def estadisticas_edificio():
 
@@ -419,6 +423,6 @@ def estadisticas_edificio():
                            inicio=inicio,
                            fin=fin)
 
+
 if __name__ == "__main__":
-    init_db()
     app.run(debug=True)
