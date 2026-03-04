@@ -78,7 +78,6 @@ def index():
         fecha = request.form.get("fecha")
         cliente_id = request.form.get("cliente_id")
         tecnicos = request.form.get("tecnicos")
-        tecnico_firma = request.form.get("tecnico_firma")
         descripcion = request.form.get("descripcion")
         estado = request.form.get("estado")
         observaciones = request.form.get("observaciones")
@@ -89,15 +88,13 @@ def index():
                     fecha=?,
                     cliente_id=?,
                     tecnicos=?,
-                    tecnico_firma=?,
                     descripcion=?,
                     estado=?,
                     observaciones=?
                 WHERE id=?
             """, (
                 fecha, cliente_id, tecnicos,
-                tecnico_firma, descripcion,
-                estado, observaciones, guia_id
+                descripcion, estado, observaciones, guia_id
             ))
 
             conn.commit()
@@ -114,12 +111,11 @@ def index():
             cursor = conn.execute("""
                 INSERT INTO guias
                 (numero_guia, fecha, cliente_id, tecnicos,
-                 tecnico_firma, descripcion, estado, observaciones)
+                 descripcion, estado, observaciones)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 nuevo_numero, fecha, cliente_id,
-                tecnicos, tecnico_firma,
-                descripcion, estado, observaciones
+                tecnicos, descripcion, estado, observaciones
             ))
 
             guia_id = cursor.lastrowid

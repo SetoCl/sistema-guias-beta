@@ -45,12 +45,17 @@
         button:hover {
             background:#0099cc;
         }
+
+        .tecnico-box{
+            display:flex;
+            gap:10px;
+        }
+
     </style>
 </head>
 
 <body>
 
-<!-- 🔵 Barra de navegación -->
 <div class="nav-bar">
     <a href="/"><button type="button">Nueva Guía</button></a>
     <a href="/reportes"><button type="button">Reportes</button></a>
@@ -79,8 +84,8 @@
     <option value="">Seleccione cliente</option>
     {% for c in clientes %}
         <option value="{{ c.id }}"
-            {% if guia and guia.cliente_id == c.id %}selected{% endif %}>
-            {{ c.nombre }}
+        {% if guia and guia.cliente_id == c.id %}selected{% endif %}>
+        {{ c.nombre }}
         </option>
     {% endfor %}
 </select>
@@ -98,64 +103,119 @@
        readonly>
 
 <label>Técnicos</label>
+
+<div class="tecnico-box">
+
+<select id="tecnico_select">
+    <option value="">Seleccione técnico</option>
+    {% for t in tecnicos %}
+        <option value="{{ t.nombre }}">{{ t.nombre }}</option>
+    {% endfor %}
+</select>
+
+<button type="button" onclick="agregarTecnico()">Agregar</button>
+
+</div>
+
 <input type="text"
+       id="lista_tecnicos"
        name="tecnicos"
        value="{{ guia.tecnicos if guia else '' }}">
-
-<label>Técnico Firma</label>
-<input type="text"
-       name="tecnico_firma"
-       value="{{ guia.tecnico_firma if guia else '' }}">
 
 <label>Descripción</label>
 <textarea name="descripcion">{{ guia.descripcion if guia else '' }}</textarea>
 
 <label>Estado</label>
 <select name="estado">
-    <option value="Pendiente"
-        {% if guia and guia.estado == "Pendiente" %}selected{% endif %}>
-        Pendiente
-    </option>
-    <option value="Cerrada"
-        {% if guia and guia.estado == "Cerrada" %}selected{% endif %}>
-        Cerrada
-    </option>
+
+    <option value="En Proceso"
+{% if guia and guia.estado == "En Proceso" %}selected{% endif %}>
+Pendiente
+</option>
+
+<option value="Pendiente Firma"
+{% if guia and guia.estado == "Pendiente Firma" %}selected{% endif %}>
+Pendiente
+</option>
+
+<option value="Cerrada"
+{% if guia and guia.estado == "Cerrada" %}selected{% endif %}>
+Cerrada
+</option>
+
 </select>
 
 <label>Observaciones</label>
 <textarea name="observaciones">{{ guia.observaciones if guia else '' }}</textarea>
 
 <button type="submit">
-    {% if guia %}Actualizar{% else %}Guardar{% endif %}
+{% if guia %}Actualizar{% else %}Guardar{% endif %}
 </button>
 
 </form>
 
+
 <script>
-function cargarCliente() {
+
+function cargarCliente(){
 
     const clienteId = document.getElementById("cliente").value;
 
-    if (!clienteId) {
-        document.getElementById("direccion").value = "";
-        document.getElementById("property").value = "";
+    if(!clienteId){
+
+        document.getElementById("direccion").value="";
+        document.getElementById("property").value="";
         return;
+
     }
 
-    fetch("/api/cliente/" + clienteId)
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById("direccion").value = data.direccion || "";
-            document.getElementById("property").value = data.property || "";
-        });
+    fetch("/api/cliente/"+clienteId)
+
+    .then(response=>response.json())
+
+    .then(data=>{
+
+        document.getElementById("direccion").value=data.direccion||"";
+        document.getElementById("property").value=data.property||"";
+
+    });
+
 }
 
-// Solo ejecutar automáticamente si NO estamos editando
-window.onload = function() {
-    {% if not guia %}
-        cargarCliente();
-    {% endif %}
-};
+
+function agregarTecnico(){
+
+    const select = document.getElementById("tecnico_select");
+    const tecnico = select.value;
+
+    if(!tecnico) return;
+
+    const campo = document.getElementById("lista_tecnicos");
+
+    if(campo.value===""){
+        campo.value = tecnico;
+    }
+    else{
+
+        const lista = campo.value.split(", ");
+
+        if(!lista.includes(tecnico)){
+            campo.value += ", "+tecnico;
+        }
+
+    }
+
+}
+
+
+window.onload=function(){
+
+{% if not guia %}
+cargarCliente();
+{% endif %}
+
+}
+
 </script>
 
 </body>
