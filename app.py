@@ -112,7 +112,7 @@ def index():
                 INSERT INTO guias
                 (numero_guia, fecha, cliente_id, tecnicos,
                  descripcion, estado, observaciones)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
             """, (
                 nuevo_numero, fecha, cliente_id,
                 tecnicos, descripcion, estado, observaciones
