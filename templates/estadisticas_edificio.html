@@ -1,118 +1,139 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Actividades por Edificio</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body { font-family:Arial; margin:40px; }
-        select, input { padding:5px; }
-    </style>
+
+<title>Estadísticas Edificios</title>
+
+<link rel="stylesheet" href="/static/style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
+
 <body>
 
-<h2>Actividades por Edificio</h2>
+<div class="layout">
 
-<div style="margin-bottom:25px;">
-    <a href="/">
-        <button type="button">Inicio</button>
-    </a>
+<div class="sidebar">
 
-    <a href="/reportes">
-        <button type="button">Reportes</button>
-    </a>
+<h2>Fibratel</h2>
 
-    <a href="/estadisticas">
-        <button type="button">Estadísticas Técnicos</button>
+<a href="/">Nueva Guía</a>
+<a href="/reportes">Reportes</a>
+<a href="/estadisticas">Est. Técnicos</a>
+<a href="/estadisticas_edificio">Est. Edificios</a>
 
-    </a>
 </div>
 
-<br><br>
+<div class="main">
+
+<div class="header">
+<h2>Actividades por Edificio</h2>
+</div>
+
+<div class="dashboard">
+
+<div class="card">
+<h3>Total actividades</h3>
+<p>{{ total }}</p>
+</div>
+
+<div class="card">
+<h3>Edificios activos</h3>
+<p>{{ edificios }}</p>
+</div>
+
+<div class="card">
+<h3>Promedio</h3>
+<p>{{ promedio }}</p>
+</div>
+
+<div class="card">
+<h3>Edificio líder</h3>
+<p>{{ lider }}</p>
+</div>
+
+</div>
+
+<div class="form-box">
 
 <form method="GET">
-    Desde:
-    <input type="date" name="inicio" value="{{ inicio }}">
-    Hasta:
-    <input type="date" name="fin" value="{{ fin }}">
 
-    Tipo gráfico:
-    <select id="tipoGrafico">
-        <option value="bar">Barra</option>
-        <option value="pie">Torta</option>
-        <option value="doughnut">Dona</option>
-        <option value="line">Línea</option>
-    </select>
+Desde
+<input type="date" name="inicio" value="{{ inicio }}">
 
-    <button type="submit">Generar</button>
+Hasta
+<input type="date" name="fin" value="{{ fin }}">
+
+<select id="tipoGrafico">
+
+<option value="bar">Barra</option>
+<option value="pie">Torta</option>
+<option value="doughnut">Dona</option>
+<option value="line">Línea</option>
+
+</select>
+
+<button type="submit">Generar</button>
+
 </form>
 
-<br><br>
+</div>
 
-<div style="width:30%; margin:auto;">
-    <canvas id="grafico"></canvas>
+<div class="chart-box">
+
+<canvas id="grafico"></canvas>
+
+</div>
+
+</div>
 </div>
 
 <script>
 
-const labels = {{ labels | tojson }};
-const valores = {{ valores | tojson }};
+const labels={{labels|tojson}};
+const valores={{valores|tojson}};
 
-let chartActual = null;
+let chartActual=null;
 
-function generarGrafico(tipo) {
+function generarGrafico(tipo){
 
-    const ctx = document.getElementById('grafico').getContext('2d');
+const ctx=document.getElementById("grafico").getContext("2d");
 
-    if (chartActual) {
-        chartActual.destroy();
-    }
-
-    chartActual = new Chart(ctx, {
-        type: tipo,
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Cantidad de Actividades',
-                data: valores,
-                backgroundColor: [
-                    '#0072CE',
-                    '#00c3ff',
-                    '#ff6384',
-                    '#36a2eb',
-                    '#ffce56',
-                    '#4bc0c0',
-                    '#9966ff',
-                    '#ff9f40',
-                    '#2ecc71',
-                    '#e74c3c',
-                    '#8e44ad',
-                    '#f1c40f'
-                ]
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: true,
-                    position: tipo === 'pie' || tipo === 'doughnut' ? 'right' : 'top'
-                }
-            },
-            scales: (tipo === 'bar' || tipo === 'line') ? {
-                y: { beginAtZero: true }
-            } : {}
-        }
-    });
+if(chartActual){
+chartActual.destroy();
 }
 
-// gráfico inicial
+chartActual=new Chart(ctx,{
+
+type:tipo,
+
+data:{
+labels:labels,
+datasets:[{
+label:"Actividades",
+data:valores,
+backgroundColor:["#0072CE","#00c3ff","#ff6384","#36a2eb","#ffce56","#4bc0c0","#9966ff","#ff9f40"]
+}]
+},
+
+options:{
+responsive:true,
+plugins:{legend:{position:"right"}},
+scales:(tipo==="bar"||tipo==="line")?{y:{beginAtZero:true}}:{}
+}
+
+});
+
+}
+
 generarGrafico("bar");
 
-// cambiar dinámicamente
 document.getElementById("tipoGrafico")
-        .addEventListener("change", function() {
-            generarGrafico(this.value);
-        });
+.addEventListener("change",function(){
+generarGrafico(this.value);
+});
 
 </script>
 

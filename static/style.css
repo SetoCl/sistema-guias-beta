@@ -1,60 +1,128 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f6f9;
-    margin: 40px;
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#f4f6f9;
 }
 
-h1 {
-    color: #1f2d3d;
+/* LAYOUT */
+
+.layout{
+    display:flex;
 }
 
-form {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    margin-bottom: 30px;
+/* SIDEBAR */
+
+.sidebar{
+    width:220px;
+    background:#1f2d3d;
+    color:white;
+    min-height:100vh;
+    padding-top:20px;
 }
 
-input, select, textarea {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
+.sidebar h2{
+    text-align:center;
+    margin-bottom:30px;
 }
 
-button {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 18px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+.sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:12px 20px;
 }
 
-button:hover {
-    background-color: #0056b3;
+.sidebar a:hover{
+    background:#32465a;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
+/* CONTENIDO */
+
+.main{
+    flex:1;
+    padding:25px;
 }
 
-table th {
-    background-color: #1f2d3d;
-    color: white;
-    padding: 10px;
+/* HEADER */
+
+.header{
+    background:white;
+    padding:15px;
+    margin-bottom:20px;
+    border-radius:8px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
 }
 
-table td {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
+/* DASHBOARD */
+
+.dashboard{
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
+    margin-bottom:25px;
 }
 
-.pdf-btn {
-    background-color: #28a745;
+.card{
+    flex:1;
+    min-width:200px;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    text-align:center;
+}
+
+.card h3{
+    margin:0;
+    color:#777;
+    font-size:14px;
+}
+
+.card p{
+    font-size:32px;
+    color:#0072CE;
+    margin-top:10px;
+}
+
+/* FORMULARIOS */
+
+.form-box{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom:25px;
+}
+
+input,select,textarea{
+    padding:8px;
+    margin-top:5px;
+    margin-bottom:12px;
+    width:100%;
+}
+
+/* BOTONES */
+
+button{
+    background:#0072CE;
+    color:white;
+    border:none;
+    padding:8px 14px;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#005aa3;
+}
+
+/* GRAFICO */
+
+.chart-box{
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    width:70%;
+    margin:auto;
 }

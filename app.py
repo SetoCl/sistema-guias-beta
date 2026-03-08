@@ -153,7 +153,6 @@ def index():
                            guia=guia,
                            proximo_numero=proximo_numero)
 
-
 # =========================================================
 # REPORTES
 # =========================================================
@@ -350,11 +349,30 @@ def estadisticas():
     labels = list(conteo.keys())
     valores = list(conteo.values())
 
-    return render_template("estadisticas.html",
-                           labels=labels,
-                           valores=valores,
-                           inicio=inicio,
-                           fin=fin)
+    total = sum(valores)
+    tecnicos = len(labels)
+
+    promedio = 0
+    if tecnicos > 0:
+        promedio = round(total / tecnicos)
+
+    lider = "-"
+    if valores:
+        i = valores.index(max(valores))
+        lider = labels[i]
+
+    return render_template(
+    "estadisticas.html",
+    labels=labels,
+    valores=valores,
+    inicio=inicio,
+    fin=fin,
+    total=total,
+    tecnicos=tecnicos,
+    promedio=promedio,
+    lider=lider
+)
+
 
 
 # =========================================================
@@ -413,11 +431,29 @@ def estadisticas_edificio():
     labels = [d["cliente"] for d in datos]
     valores = [d["total"] for d in datos]
 
-    return render_template("estadisticas_edificio.html",
-                           labels=labels,
-                           valores=valores,
-                           inicio=inicio,
-                           fin=fin)
+    total = sum(valores)
+    edificios = len(labels)
+
+    promedio = 0
+    if edificios > 0:
+        promedio = round(total / edificios)
+
+    lider = "-"
+    if valores:
+        i = valores.index(max(valores))
+        lider = labels[i]
+
+    return render_template(
+        "estadisticas_edificio.html",
+        labels=labels,
+        valores=valores,
+        inicio=inicio,
+        fin=fin,
+        total=total,
+        edificios=edificios,
+        promedio=promedio,
+        lider=lider
+    )
 
 
 if __name__ == "__main__":
