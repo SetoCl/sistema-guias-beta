@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Guía creada</title>
+
+<link rel="stylesheet" href="/static/style.css">
+
+</head>
+
+<body>
+
+<div class="layout">
+
+<div class="main">
+
+<div class="header">
+<h2>Guía creada correctamente</h2>
+</div>
+
+<div class="form-box">
+
+<p><b>N° Guía:</b> {{ guia.numero_guia }}</p>
+
+<br>
+
+<a href="/pdf/{{ guia.id }}" target="_blank">
+<button>📄 Ver PDF de la guía</button>
+</a>
+
+<br><br>
+
+<label>Link para aprobación del Property</label>
+
+<input type="text" id="link" value="{{ link_revision }}" readonly>
+
+<button onclick="copiar()">📋 Copiar link</button>
+
+<br><br>
+
+<a id="correoBtn" target="_blank">
+<button>📧 Enviar correo</button>
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+function copiar(){
+
+const copyText=document.getElementById("link");
+
+copyText.select();
+copyText.setSelectionRange(0,99999);
+
+navigator.clipboard.writeText(copyText.value);
+
+alert("Link copiado");
+
+}
+
+// -------- GENERAR CORREO --------
+
+const link=document.getElementById("link").value;
+
+const asunto="Guía de servicio N° {{ guia.numero_guia }}";
+
+const cuerpo=
+"Estimado,\n\n"+
+"Se ha generado una guía de servicio.\n\n"+
+"Para revisar y aprobar el trabajo utilice el siguiente enlace:\n\n"+
+link+
+"\n\nMuchas gracias.\nFibratel";
+
+const mailto=
+"mailto:psalinas@igpaseguridad.cl;ptapia@igpaseguridad.cl"+
+"?subject="+encodeURIComponent(asunto)+
+"&body="+encodeURIComponent(cuerpo);
+
+document.getElementById("correoBtn").href=mailto;
+
+</script>
+
+</body>
+</html>

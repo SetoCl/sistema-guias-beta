@@ -19,7 +19,7 @@
 
 <h2>Fibratel</h2>
 
-<a href="/">Nueva Guía</a>
+<a href="/">Inicio</a>
 <a href="/reportes">Reportes</a>
 <a href="/estadisticas">Est. Técnicos</a>
 <a href="/estadisticas_edificio">Est. Edificios</a>
@@ -46,18 +46,18 @@
 
 <option value="">Todos</option>
 
-<option value="En Proceso"
-{% if request.args.get("estado")=="En Proceso" %}selected{% endif %}>
-En Proceso
+<option value="ABIERTA"
+{% if request.args.get("estado")=="ABIERTA" %}selected{% endif %}>
+Abierta
 </option>
 
-<option value="Pendiente Firma"
-{% if request.args.get("estado")=="Pendiente Firma" %}selected{% endif %}>
-Pendiente Firma
+<option value="EN_REVISION"
+{% if request.args.get("estado")=="EN_REVISION" %}selected{% endif %}>
+En Revisión
 </option>
 
-<option value="Cerrada"
-{% if request.args.get("estado")=="Cerrada" %}selected{% endif %}>
+<option value="CERRADA"
+{% if request.args.get("estado")=="CERRADA" %}selected{% endif %}>
 Cerrada
 </option>
 
@@ -79,8 +79,10 @@ Cerrada
 <th>N°</th>
 <th>Fecha</th>
 <th>Cliente</th>
+<th>Tipo</th>
 <th>Técnicos</th>
 <th>Estado</th>
+<th>Editar</th>
 <th>PDF</th>
 </tr>
 
@@ -94,14 +96,44 @@ Cerrada
 
 <td>{{ g.cliente }}</td>
 
+<td>{{ g.tipo_trabajo }}</td>
+
 <td>{{ g.tecnicos }}</td>
 
-<td>{{ g.estado }}</td>
+<td>
+
+{% if g.estado == "ABIERTA" %}
+<span class="estado abierta">ABIERTA</span>
+
+{% elif g.estado == "CERRADA" %}
+<span class="estado cerrada">CERRADA</span>
+
+{% else %}
+<span class="estado">{{ g.estado }}</span>
+{% endif %}
+
+</td>
+
+<td>
+
+{% if g.estado != "CERRADA" %}
+
+<a href="/?editar={{ g.id }}">
+<button type="button">Editar</button>
+</a>
+
+{% else %}
+
+—
+
+{% endif %}
+
+</td>
 
 <td>
 
 <a href="/pdf/{{ g.id }}" target="_blank">
-<button type="button">Ver PDF</button>
+<button type="button">PDF</button>
 </a>
 
 </td>

@@ -19,7 +19,7 @@
 
 <h2>Fibratel</h2>
 
-<a href="/">Nueva Guía</a>
+<a href="/">Inicio</a>
 <a href="/reportes">Reportes</a>
 <a href="/estadisticas">Est. Técnicos</a>
 <a href="/estadisticas_edificio">Est. Edificios</a>
@@ -60,11 +60,13 @@
 
 <form method="GET">
 
-Desde
+<label>Desde</label>
 <input type="date" name="inicio" value="{{ inicio }}">
 
-Hasta
+<label>Hasta</label>
 <input type="date" name="fin" value="{{ fin }}">
+
+<label>Tipo de gráfico</label>
 
 <select id="tipoGrafico">
 
@@ -114,14 +116,27 @@ labels:labels,
 datasets:[{
 label:"Actividades",
 data:valores,
-backgroundColor:["#0072CE","#00c3ff","#ff6384","#36a2eb","#ffce56","#4bc0c0","#9966ff","#ff9f40"]
+backgroundColor:[
+"#0072CE",
+"#00c3ff",
+"#ff6384",
+"#36a2eb",
+"#ffce56",
+"#4bc0c0",
+"#9966ff",
+"#ff9f40"
+]
 }]
 },
 
 options:{
 responsive:true,
-plugins:{legend:{position:"right"}},
-scales:(tipo==="bar"||tipo==="line")?{y:{beginAtZero:true}}:{}
+plugins:{
+legend:{position:"right"}
+},
+scales:(tipo==="bar"||tipo==="line")?{
+y:{beginAtZero:true}
+}:{}
 }
 
 });
