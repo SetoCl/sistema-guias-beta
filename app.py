@@ -4,6 +4,7 @@ from datetime import date, datetime
 import os
 import io
 import uuid
+from urllib.parse import quote
 
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, Image
 from reportlab.lib.styles import getSampleStyleSheet
@@ -119,9 +120,37 @@ def index():
             ))
 
             conn.commit()
+
+            guia = conn.execute("""
+                SELECT numero_guia, token_revision
+                FROM guias
+                WHERE id=?
+            """,(guia_id,)).fetchone()
+
             conn.close()
 
-            return redirect(url_for("generar_pdf", guia_id=guia_id))
+            link = request.host_url + "revision/" + guia["token_revision"]
+
+            destinatarios = "psalinas@igpaseguridad.cl;ptapia@igpaseguridad.cl"
+
+            asunto = quote(f"Revisión de trabajo - Guía {guia['numero_guia']}")
+
+            cuerpo = quote(f"""
+Estimados,
+
+La guía N° {guia['numero_guia']} ha sido actualizada.
+
+Para revisar y aprobar el trabajo utilicen el siguiente enlace:
+
+{link}
+
+Saludos
+Fibratel
+""")
+
+            mailto = f"mailto:{destinatarios}?subject={asunto}&body={cuerpo}"
+
+            return redirect(mailto)
 
         else:
 
