@@ -16,13 +16,15 @@ display:flex;
 position:fixed;
 top:0;
 left:0;
-width:220px;
+width:170px;
 height:100vh;
 background:#0f3d6e;
 color:white;
-padding:20px;
+padding:15px 12px;
 overflow-y:auto;
 }
+
+/* LOGO */
 
 .logo-box{
 text-align:left;
@@ -30,31 +32,36 @@ margin-bottom:10px;
 }
 
 .logo-box img{
-width:210px;
-border-radius:10px;
+width:150px;
+border-radius:8px;
 }
+
+/* NOMBRE EMPRESA */
 
 .empresa{
 text-align:left;
-font-size:20px;
-margin-bottom:30px;
+font-size:18px;
+margin-bottom:20px;
 font-weight:600;
 }
 
+/* LINKS */
+
 .sidebar a{
 display:block;
-padding:10px;
-margin-bottom:8px;
+padding:8px 10px;
+margin-bottom:6px;
 text-decoration:none;
 color:white;
 border-radius:6px;
 font-weight:500;
+font-size:14px;
 transition:0.2s;
 }
 
 .sidebar a:hover{
 background:#0072CE;
-padding-left:15px;
+padding-left:14px;
 }
 
 /* CONTENIDO */

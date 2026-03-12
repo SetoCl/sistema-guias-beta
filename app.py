@@ -68,6 +68,23 @@ def init_db():
         )
     """)
 
+    conn.execute("""
+
+    CREATE TABLE IF NOT EXISTS mantenciones (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    cliente_id INTEGER,
+    fecha_entrega TEXT,
+    numero_guia INTEGER,
+
+    mes INTEGER,
+    anio INTEGER
+
+    )
+
+    """)
+
     conn.commit()
     conn.close()
 
@@ -548,6 +565,117 @@ def reportes():
     conn.close()
 
     return render_template("reportes.html", guias=guias)
+
+# =========================================================
+# MANTENCIONES
+# =========================================================
+@app.route("/mantenciones")
+def mantenciones():
+
+    mes = int(request.args.get("mes", date.today().month))
+    anio = int(request.args.get("anio", date.today().year))
+
+    conn = get_db()
+
+    # edificios
+
+    edificios = conn.execute("""
+        SELECT id, nombre
+        FROM clientes
+        ORDER BY nombre
+    """).fetchall()
+
+    # calcular rango mes actual
+
+    inicio = f"{anio}-{mes:02d}-01"
+
+    if mes == 12:
+        fin = f"{anio+1}-01-01"
+    else:
+        fin = f"{anio}-{mes+1:02d}-01"
+
+
+    # calcular mes anterior
+
+    if mes == 1:
+        mes_ant = 12
+        anio_ant = anio - 1
+    else:
+        mes_ant = mes - 1
+        anio_ant = anio
+
+    inicio_ant = f"{anio_ant}-{mes_ant:02d}-01"
+
+    if mes_ant == 12:
+        fin_ant = f"{anio_ant+1}-01-01"
+    else:
+        fin_ant = f"{anio_ant}-{mes_ant+1:02d}-01"
+
+
+    # mantenciones del mes seleccionado
+
+    mantenciones = conn.execute("""
+
+        SELECT
+        cliente_id,
+        fecha,
+        numero_guia
+
+        FROM guias
+
+        WHERE tipo_trabajo LIKE '%MANTENC%'
+        AND fecha >= ?
+        AND fecha < ?
+
+    """,(inicio,fin)).fetchall()
+
+
+    # mantenciones del mes anterior
+
+    historial = conn.execute("""
+
+        SELECT
+        cliente_id,
+        fecha
+
+        FROM guias
+
+        WHERE tipo_trabajo LIKE '%MANTENC%'
+        AND fecha >= ?
+        AND fecha < ?
+
+    """,(inicio_ant,fin_ant)).fetchall()
+
+    conn.close()
+
+
+    # diccionario mantenciones del mes
+
+    mant_dic = {}
+
+    for m in mantenciones:
+        mant_dic[m["cliente_id"]] = {
+            "fecha_entrega": m["fecha"],
+            "numero_guia": m["numero_guia"]
+        }
+
+
+    # diccionario mantención anterior
+
+    hist_dic = {h["cliente_id"]:h["fecha"] for h in historial}
+
+
+    return render_template(
+
+        "mantenciones.html",
+
+        edificios=edificios,
+        mant_dic=mant_dic,
+        hist_dic=hist_dic,
+        mes=mes,
+        anio=anio
+
+    )
 
 # =========================================================
 # ESTADISTICAS EDIFICIOS
