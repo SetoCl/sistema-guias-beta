@@ -1,51 +1,46 @@
 body{
 margin:0;
-font-family:Arial, sans-serif;
+font-family:Arial,sans-serif;
 background:#f4f6f9;
 }
 
-/* LAYOUT */
+/* =========================
+LAYOUT
+========================= */
 
 .layout{
 display:flex;
 }
 
-/* SIDEBAR */
+/* =========================
+SIDEBAR
+========================= */
 
 .sidebar{
 position:fixed;
 top:0;
 left:0;
-width:170px;
+width:190px;
 height:100vh;
 background:#0f3d6e;
 color:white;
-padding:15px 12px;
+padding:18px;
 overflow-y:auto;
 }
 
-/* LOGO */
-
 .logo-box{
-text-align:left;
 margin-bottom:10px;
 }
 
 .logo-box img{
 width:150px;
-border-radius:8px;
 }
 
-/* NOMBRE EMPRESA */
-
 .empresa{
-text-align:left;
 font-size:18px;
 margin-bottom:20px;
 font-weight:600;
 }
-
-/* LINKS */
 
 .sidebar a{
 display:block;
@@ -64,14 +59,19 @@ background:#0072CE;
 padding-left:14px;
 }
 
-/* CONTENIDO */
+/* =========================
+CONTENIDO
+========================= */
 
 .main{
-margin-left:220px;
-padding:15px 25px 25px 25px;
+margin-left:210px;
+padding:25px;
+width:100%;
 }
 
-/* HEADER */
+/* =========================
+HEADER
+========================= */
 
 .header{
 background:white;
@@ -88,39 +88,42 @@ font-weight:700;
 color:#1e2a38;
 }
 
-/* DASHBOARD */
+/* =========================
+DASHBOARD
+========================= */
 
 .dashboard{
 display:flex;
-gap:25px;
+gap:20px;
 flex-wrap:wrap;
-margin-bottom:25px;
+margin-bottom:20px;
 }
 
 .card{
-flex:1;
-min-width:200px;
 background:white;
-padding:20px;
+padding:10px 14px;
 border-radius:10px;
-box-shadow:0 2px 8px rgba(0,0,0,0.08);
+box-shadow:0 2px 6px rgba(0,0,0,0.1);
 text-align:center;
+min-width:110px;
 }
 
 .card h3{
+font-size:12px;
 margin:0;
-font-size:14px;
-color:#666;
+color:#555;
 }
 
 .card p{
-font-size:28px;
-font-weight:700;
-margin-top:10px;
+font-size:18px;
+font-weight:bold;
+margin-top:3px;
 color:#0072CE;
 }
 
-/* FORMULARIOS */
+/* =========================
+FORMULARIOS
+========================= */
 
 .form-box{
 background:white;
@@ -135,7 +138,7 @@ font-size:13px;
 font-weight:bold;
 }
 
-input,select,textarea{
+input,textarea{
 padding:8px;
 margin-top:5px;
 margin-bottom:12px;
@@ -145,11 +148,22 @@ border-radius:5px;
 font-size:14px;
 }
 
+select{
+padding:8px;
+margin-top:5px;
+margin-bottom:12px;
+border:1px solid #ddd;
+border-radius:5px;
+font-size:14px;
+}
+
 textarea{
 min-height:90px;
 }
 
-/* BOTONES */
+/* =========================
+BOTONES
+========================= */
 
 button{
 background:#0072CE;
@@ -165,7 +179,9 @@ button:hover{
 background:#005fa3;
 }
 
-/* TABLAS */
+/* =========================
+TABLAS
+========================= */
 
 table{
 width:100%;
@@ -183,7 +199,9 @@ th{
 background:#f1f3f6;
 }
 
-/* ESTADOS */
+/* =========================
+ESTADOS
+========================= */
 
 .estado{
 padding:4px 10px;
@@ -201,7 +219,9 @@ background:#28a745;
 background:#dc3545;
 }
 
-/* GRAFICOS */
+/* =========================
+GRAFICOS
+========================= */
 
 .chart-box{
 background:white;
@@ -210,4 +230,39 @@ border-radius:10px;
 box-shadow:0 2px 8px rgba(0,0,0,0.08);
 width:70%;
 margin:auto;
+}
+
+/* =========================
+FORMULARIO NUEVA GUIA
+========================= */
+
+.form-group{
+display:flex;
+flex-direction:column;
+margin-bottom:12px;
+}
+
+.form-line{
+display:flex;
+gap:12px;
+align-items:center;
+flex-wrap:wrap;
+margin-bottom:12px;
+}
+
+.form-line label{
+min-width:90px;
+}
+
+.form-line select,
+.form-line input{
+width:200px;
+}
+
+.form-line textarea{
+width:100%;
+}
+
+.form-line button{
+height:34px;
 }

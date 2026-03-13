@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Control de Guías</title>
+
+<link rel="stylesheet" href="/static/style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<div class="layout">
+
+<div class="sidebar">
+
+<div class="logo-box">
+<img src="/static/logo.png">
+</div>
+
+<h2 class="empresa">Fibratel</h2>
+
+<a href="/">Nueva Guía</a>
+<a href="/reportes">Reportes</a>
+<a href="/estadisticas">Est. Técnicos</a>
+<a href="/estadisticas_edificio">Est. Edificios</a>
+<a href="/mantenciones">Mantenciones</a>
+
+</div>
+
+<div class="main">
+
+{% block contenido %}{% endblock %}
+
+</div>
+
+</div>
+
+{% block scripts %}{% endblock %}
+
+</body>
+</html>

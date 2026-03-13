@@ -1,39 +1,11 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-
-<title>Reportes</title>
-
-<link rel="stylesheet" href="/static/style.css">
-
-</head>
-
-<body>
-
-<div class="layout">
-
-<!-- SIDEBAR -->
-
-<div class="sidebar">
-
-<h2>Fibratel</h2>
-
-<a href="/">Inicio</a>
-<a href="/reportes">Reportes</a>
-<a href="/estadisticas">Est. Técnicos</a>
-<a href="/estadisticas_edificio">Est. Edificios</a>
-<a href="/mantenciones">Mantenciones</a>
-
-</div>
-
-<!-- CONTENIDO -->
-
-<div class="main">
+{% block contenido %}
 
 <div class="header">
 <h2>Reportes de Guías</h2>
 </div>
+
 
 <!-- FILTRO -->
 
@@ -49,17 +21,12 @@
 
 <option value="ABIERTA"
 {% if request.args.get("estado")=="ABIERTA" %}selected{% endif %}>
-Abierta
-</option>
-
-<option value="EN_REVISION"
-{% if request.args.get("estado")=="EN_REVISION" %}selected{% endif %}>
-En Revisión
+Abiertas
 </option>
 
 <option value="CERRADA"
 {% if request.args.get("estado")=="CERRADA" %}selected{% endif %}>
-Cerrada
+Cerradas
 </option>
 
 </select>
@@ -70,13 +37,18 @@ Cerrada
 
 </div>
 
+
+
 <!-- TABLA -->
 
 <div class="form-box">
 
 <table>
 
+<thead>
+
 <tr>
+
 <th>N°</th>
 <th>Fecha</th>
 <th>Cliente</th>
@@ -85,7 +57,12 @@ Cerrada
 <th>Estado</th>
 <th>Editar</th>
 <th>PDF</th>
+
 </tr>
+
+</thead>
+
+<tbody>
 
 {% for g in guias %}
 
@@ -95,46 +72,53 @@ Cerrada
 
 <td>{{ g.fecha }}</td>
 
-<td>{{ g.cliente }}</td>
+<td>{{ g.cliente if g.cliente else "-" }}</td>
 
-<td>{{ g.tipo_trabajo }}</td>
+<td>{{ g.tipo_trabajo if g.tipo_trabajo else "-" }}</td>
 
-<td>{{ g.tecnicos }}</td>
+<td>{{ g.tecnicos if g.tecnicos else "-" }}</td>
+
+
+<!-- ESTADO -->
 
 <td>
 
 {% if g.estado == "ABIERTA" %}
+
 <span class="estado abierta">ABIERTA</span>
 
-{% elif g.estado == "CERRADA" %}
-<span class="estado cerrada">CERRADA</span>
-
 {% else %}
-<span class="estado">{{ g.estado }}</span>
+
+<span class="estado cerrada">
+{{ g.estado if g.estado else "CERRADA" }}
+</span>
+
 {% endif %}
 
 </td>
+
+
+<!-- EDITAR -->
 
 <td>
 
-{% if g.estado != "CERRADA" %}
-
 <a href="/?editar={{ g.id }}">
-<button type="button">Editar</button>
+
+<button>Editar</button>
+
 </a>
 
-{% else %}
-
-—
-
-{% endif %}
-
 </td>
+
+
+<!-- PDF -->
 
 <td>
 
 <a href="/pdf/{{ g.id }}" target="_blank">
-<button type="button">PDF</button>
+
+<button>PDF</button>
+
 </a>
 
 </td>
@@ -143,13 +127,10 @@ Cerrada
 
 {% endfor %}
 
+</tbody>
+
 </table>
 
 </div>
 
-</div>
-
-</div>
-
-</body>
-</html>
+{% endblock %}

@@ -1,39 +1,6 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-
-<title>Control de Guías</title>
-
-<link rel="stylesheet" href="/static/style.css">
-
-</head>
-
-<body>
-
-<div class="layout">
-
-<!-- SIDEBAR -->
-
-<div class="sidebar">
-
-<div class="logo-box">
-    <img src="/static/logo.png" alt="Fibratel">
-</div>
-
-<h2>Fibratel</h2>
-
-<a href="/">Nueva Guía</a>
-<a href="/reportes">Reportes</a>
-<a href="/estadisticas">Est. Técnicos</a>
-<a href="/estadisticas_edificio">Est. Edificios</a>
-<a href="/mantenciones">Mantenciones</a>
-
-</div>
-
-<!-- CONTENIDO -->
-
-<div class="main">
+{% block contenido %}
 
 <div class="header">
 
@@ -67,6 +34,8 @@ Sistema de Control de Guías
 
 </div>
 
+</div>
+
 
 <!-- FORMULARIO -->
 
@@ -76,20 +45,30 @@ Sistema de Control de Guías
 
 <input type="hidden" name="guia_id" value="{{ guia.id if guia else '' }}">
 
+<!-- GUIA Y FECHA -->
 
+<div class="form-line">
+
+<div class="form-group">
 <label>N° Guía</label>
-
 <input type="text"
 value="{{ guia.numero_guia if guia else proximo_numero }}"
 readonly>
+</div>
 
-
+<div class="form-group">
 <label>Fecha</label>
-
 <input type="date"
 name="fecha"
 value="{{ guia.fecha if guia else fecha }}">
+</div>
 
+</div>
+
+
+<!-- CLIENTE -->
+
+<div class="form-group">
 
 <label>Cliente</label>
 
@@ -106,6 +85,12 @@ value="{{ guia.fecha if guia else fecha }}">
 
 </select>
 
+</div>
+
+
+<!-- DIRECCION -->
+
+<div class="form-group">
 
 <label>Dirección</label>
 
@@ -114,6 +99,12 @@ id="direccion"
 value="{{ guia.direccion if guia else '' }}"
 readonly>
 
+</div>
+
+
+<!-- PROPERTY -->
+
+<div class="form-group">
 
 <label>Property</label>
 
@@ -122,7 +113,14 @@ id="property"
 value="{{ guia.property if guia else '' }}"
 readonly>
 
+</div>
 
+
+<!-- TIPO DE TRABAJO Y TECNICOS -->
+
+<div class="form-line">
+
+<div class="form-group">
 
 <label>Tipo de Trabajo</label>
 
@@ -157,7 +155,10 @@ Garantía
 
 </select>
 
+</div>
 
+
+<div class="form-group">
 
 <label>Técnicos</label>
 
@@ -171,15 +172,31 @@ Garantía
 
 </select>
 
+</div>
+
+
 <button type="button" onclick="agregarTecnico()">Agregar</button>
 
+</div>
+
+
+<!-- LISTA TECNICOS -->
+
+<div class="form-group">
+
+<label>Técnicos asignados</label>
 
 <input type="text"
 id="lista_tecnicos"
 name="tecnicos"
 value="{{ guia.tecnicos if guia else '' }}">
 
+</div>
 
+
+<!-- DESCRIPCION -->
+
+<div class="form-group">
 
 <label>Descripción</label>
 
@@ -187,7 +204,12 @@ value="{{ guia.tecnicos if guia else '' }}">
 {{ guia.descripcion if guia else '' }}
 </textarea>
 
+</div>
 
+
+<!-- OBSERVACIONES -->
+
+<div class="form-group">
 
 <label>Observaciones</label>
 
@@ -195,6 +217,7 @@ value="{{ guia.tecnicos if guia else '' }}">
 {{ guia.observaciones if guia else '' }}
 </textarea>
 
+</div>
 
 
 <button type="submit">
@@ -208,10 +231,6 @@ Guardar
 </button>
 
 </form>
-
-</div>
-
-</div>
 
 </div>
 
@@ -277,12 +296,16 @@ const descripcion=document.getElementById("descripcion");
 
 if(tipo==="MANTENCION"){
 
-descripcion.value=
-"Se realiza mantención preventiva del sistema.\n\n"+
-"- Revisión de conectividad\n"+
-"- Revisión de equipos\n"+
-"- Verificación de señal\n"+
-"- Revisión de cableado\n";
+descripcion.value =
+"Se realiza mantencion preventiva:\n\n"+
+"- Sistema CCTV\n"+
+"- Sistema de Citofonia\n"+
+"- Sistema de Deteccion de Incendios\n"+
+"- Sistema de Control de acceso\n"+
+"- Revision de funcionamiento de porton vehicular\n"+
+"- Revision de funcionamiento de retenedores\n"+
+"- Revision de funcionamiento de bicicleteros\n"+
+"- Chequeo de fuentes de poder y alimentacion en general";
 
 }
 
@@ -290,5 +313,4 @@ descripcion.value=
 
 </script>
 
-</body>
-</html>
+{% endblock %}

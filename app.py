@@ -482,24 +482,22 @@ def generar_pdf(guia_id):
     ], colWidths=[8*cm,8*cm])
 
     firma.setStyle([
-                                                                                                                                                                                                                            ('ALIGN',(0,0),(-1,-1),'CENTER')
-                                                                                                                                                                                                                        ])
-
+    ('ALIGN', (0,0), (-1,-1), 'CENTER')
+])
     elements.append(firma)
     elements.append(Spacer(1,30))
 
     # PIE
+    texto = f"""
+    Emitido el {datetime.now().strftime('%d-%m-%Y %H:%M')}<br/>
+    <b>FIBRATEL SPA</b><br/>
+    Servicios de Fibra Óptica<br/>
+    Soporte técnico especializado
+    """
+
     elements.append(
-    Paragraph(
-        f"""
-        Emitido el {datetime.now().strftime('%d-%m-%Y %H:%M')}<br/>
-        <b>FIBRATEL SPA</b><br/>
-        Servicios de Fibra Óptica<br/>
-        Soporte técnico especializado
-        """,
-        styles["Normal"]
+        Paragraph(texto, styles["Normal"])
     )
-)
 
     doc.build(elements)
 
@@ -577,7 +575,9 @@ def mantenciones():
 
     conn = get_db()
 
-    # edificios
+    # ==========================
+    # EDIFICIOS
+    # ==========================
 
     edificios = conn.execute("""
         SELECT id, nombre
@@ -585,7 +585,11 @@ def mantenciones():
         ORDER BY nombre
     """).fetchall()
 
-    # calcular rango mes actual
+    total_edificios = len(edificios)
+
+    # ==========================
+    # RANGO MES ACTUAL
+    # ==========================
 
     inicio = f"{anio}-{mes:02d}-01"
 
@@ -595,7 +599,9 @@ def mantenciones():
         fin = f"{anio}-{mes+1:02d}-01"
 
 
-    # calcular mes anterior
+    # ==========================
+    # MES ANTERIOR
+    # ==========================
 
     if mes == 1:
         mes_ant = 12
@@ -612,15 +618,13 @@ def mantenciones():
         fin_ant = f"{anio_ant}-{mes_ant+1:02d}-01"
 
 
-    # mantenciones del mes seleccionado
+    # ==========================
+    # MANTENCIONES MES ACTUAL
+    # ==========================
 
-    mantenciones = conn.execute("""
+    mantenciones_mes = conn.execute("""
 
-        SELECT
-        cliente_id,
-        fecha,
-        numero_guia
-
+        SELECT cliente_id, fecha, numero_guia
         FROM guias
 
         WHERE tipo_trabajo LIKE '%MANTENC%'
@@ -630,14 +634,13 @@ def mantenciones():
     """,(inicio,fin)).fetchall()
 
 
-    # mantenciones del mes anterior
+    # ==========================
+    # MANTENCIONES MES ANTERIOR
+    # ==========================
 
     historial = conn.execute("""
 
-        SELECT
-        cliente_id,
-        fecha
-
+        SELECT cliente_id, fecha
         FROM guias
 
         WHERE tipo_trabajo LIKE '%MANTENC%'
@@ -649,33 +652,73 @@ def mantenciones():
     conn.close()
 
 
-    # diccionario mantenciones del mes
+    # ==========================
+    # DICCIONARIOS
+    # ==========================
 
-    mant_dic = {}
+    mant_dic = {
+        m["cliente_id"]: m
+        for m in mantenciones_mes
+    }
 
-    for m in mantenciones:
-        mant_dic[m["cliente_id"]] = {
-            "fecha_entrega": m["fecha"],
-            "numero_guia": m["numero_guia"]
-        }
+    hist_dic = {
+        h["cliente_id"]: h["fecha"]
+        for h in historial
+    }
 
 
-    # diccionario mantención anterior
+    # ==========================
+    # LISTA FINAL
+    # ==========================
 
-    hist_dic = {h["cliente_id"]:h["fecha"] for h in historial}
+    lista = []
+
+    edificios_listos = 0
+
+    for e in edificios:
+
+        mant_mes = mant_dic.get(e["id"])
+        anterior = hist_dic.get(e["id"])
+
+        if mant_mes:
+            fecha_mes = mant_mes["fecha"]
+            guia = mant_mes["numero_guia"]
+            edificios_listos += 1
+        else:
+            fecha_mes = None
+            guia = None
+
+        lista.append({
+
+            "edificio": e["nombre"],
+            "anterior": anterior,
+            "mes": fecha_mes,
+            "guia": guia
+
+        })
+
+
+    # ==========================
+    # DASHBOARD
+    # ==========================
+
+    mantenciones_mes_total = edificios_listos
+
+    pendientes = total_edificios - mantenciones_mes_total
 
 
     return render_template(
 
-        "mantenciones.html",
+    "mantenciones.html",
 
-        edificios=edificios,
-        mant_dic=mant_dic,
-        hist_dic=hist_dic,
-        mes=mes,
-        anio=anio
+    mantenciones=lista,
+    mes=mes,
+    anio=anio,
 
-    )
+    total_edificios=total_edificios,
+    mantenciones_mes_total=mantenciones_mes_total,
+    pendientes=pendientes
+)
 
 # =========================================================
 # ESTADISTICAS EDIFICIOS

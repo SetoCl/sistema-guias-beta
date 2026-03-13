@@ -1,33 +1,6 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-
-<title>Estadísticas Edificios</title>
-
-<link rel="stylesheet" href="/static/style.css">
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-</head>
-
-<body>
-
-<div class="layout">
-
-<div class="sidebar">
-
-<h2>Fibratel</h2>
-
-<a href="/">Inicio</a>
-<a href="/reportes">Reportes</a>
-<a href="/estadisticas">Est. Técnicos</a>
-<a href="/estadisticas_edificio">Est. Edificios</a>
-<a href="/mantenciones">Mantenciones</a>
-
-</div>
-
-<div class="main">
+{% block contenido %}
 
 <div class="header">
 <h2>Actividades por Edificio</h2>
@@ -57,41 +30,25 @@
 
 </div>
 
-<div class="form-box">
-
-<form method="GET">
-
-<label>Desde</label>
-<input type="date" name="inicio" value="{{ inicio }}">
-
-<label>Hasta</label>
-<input type="date" name="fin" value="{{ fin }}">
-
-<label>Tipo de gráfico</label>
+<div class="chart-box">
 
 <select id="tipoGrafico">
 
-<option value="bar">Barra</option>
+<option value="bar">Barras</option>
 <option value="pie">Torta</option>
 <option value="doughnut">Dona</option>
 <option value="line">Línea</option>
 
 </select>
 
-<button type="submit">Generar</button>
-
-</form>
-
-</div>
-
-<div class="chart-box">
-
 <canvas id="grafico"></canvas>
 
 </div>
 
-</div>
-</div>
+{% endblock %}
+
+
+{% block scripts %}
 
 <script>
 
@@ -124,8 +81,7 @@ backgroundColor:[
 "#36a2eb",
 "#ffce56",
 "#4bc0c0",
-"#9966ff",
-"#ff9f40"
+"#9966ff"
 ]
 }]
 },
@@ -153,5 +109,4 @@ generarGrafico(this.value);
 
 </script>
 
-</body>
-</html>
+{% endblock %}

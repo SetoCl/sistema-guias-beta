@@ -3,72 +3,9 @@
 
 <head>
 
-<meta charset="UTF-8">
 <title>Mantenciones</title>
 
 <link rel="stylesheet" href="/static/style.css">
-
-<style>
-
-.tabla-scroll{
-overflow-x:auto;
-width:100%;
-}
-
-.tabla-mantenciones{
-border-collapse:collapse;
-background:white;
-min-width:1800px;
-}
-
-.tabla-mantenciones th,
-.tabla-mantenciones td{
-border:1px solid #ddd;
-padding:4px;
-font-size:12px;
-text-align:center;
-}
-
-.tabla-mantenciones th{
-background:#0f7f7b;
-color:white;
-}
-
-.col-edificio{
-text-align:left;
-min-width:260px;
-font-weight:bold;
-padding-left:10px;
-}
-
-.col-info{
-min-width:110px;
-}
-
-.col-dia{
-width:32px;
-}
-
-.fecha-vertical{
-writing-mode:vertical-rl;
-transform:rotate(180deg);
-font-size:11px;
-}
-
-.selector-mes{
-margin:10px 0 20px 0;
-display:flex;
-gap:10px;
-align-items:center;
-}
-
-.marcado{
-background:#0072CE;
-height:18px;
-border-radius:3px;
-}
-
-</style>
 
 </head>
 
@@ -80,6 +17,10 @@ border-radius:3px;
 
 <div class="sidebar">
 
+<div class="logo-box">
+<img src="/static/logo.png">
+</div>
+
 <h2>Fibratel</h2>
 
 <a href="/">Nueva Guía</a>
@@ -90,43 +31,46 @@ border-radius:3px;
 
 </div>
 
-<!-- MAIN -->
+<!-- CONTENIDO -->
 
-<div class="main">
+<div class="main mantenciones">
 
 <div class="header">
-<h1>Mantenciones</h1>
+
+<h1 class="titulo-sistema">Mantenciones</h1>
+
 </div>
+
 
 <!-- SELECTOR MES -->
 
-<div class="selector-mes">
+<div class="form-box">
 
-<form method="get">
+<form method="GET" class="form-mes">
 
 <select name="mes">
 
-<option value="1" {% if mes==1 %}selected{% endif %}>Enero</option>
-<option value="2" {% if mes==2 %}selected{% endif %}>Febrero</option>
-<option value="3" {% if mes==3 %}selected{% endif %}>Marzo</option>
-<option value="4" {% if mes==4 %}selected{% endif %}>Abril</option>
-<option value="5" {% if mes==5 %}selected{% endif %}>Mayo</option>
-<option value="6" {% if mes==6 %}selected{% endif %}>Junio</option>
-<option value="7" {% if mes==7 %}selected{% endif %}>Julio</option>
-<option value="8" {% if mes==8 %}selected{% endif %}>Agosto</option>
-<option value="9" {% if mes==9 %}selected{% endif %}>Septiembre</option>
-<option value="10" {% if mes==10 %}selected{% endif %}>Octubre</option>
-<option value="11" {% if mes==11 %}selected{% endif %}>Noviembre</option>
-<option value="12" {% if mes==12 %}selected{% endif %}>Diciembre</option>
+{% for m in range(1,13) %}
+
+<option value="{{m}}" {% if m==mes %}selected{% endif %}>
+
+{{["Enero","Febrero","Marzo","Abril","Mayo","Junio",
+"Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"][m-1]}}
+
+</option>
+
+{% endfor %}
 
 </select>
 
+
 <select name="anio">
 
-<option {% if anio==2024 %}selected{% endif %}>2024</option>
-<option {% if anio==2025 %}selected{% endif %}>2025</option>
-<option {% if anio==2026 %}selected{% endif %}>2026</option>
-<option {% if anio==2027 %}selected{% endif %}>2027</option>
+{% for a in range(2024,2031) %}
+
+<option value="{{a}}" {% if a==anio %}selected{% endif %}>{{a}}</option>
+
+{% endfor %}
 
 </select>
 
@@ -136,53 +80,47 @@ border-radius:3px;
 
 </div>
 
+
 <!-- DASHBOARD -->
 
 <div class="dashboard">
 
 <div class="card">
 <h3>Edificios</h3>
-<p>{{edificios|length}}</p>
+<p>{{ mantenciones|length }}</p>
 </div>
 
 <div class="card">
-<h3>Mes</h3>
-<p>{{mes}}</p>
+<h3>Mantenciones del mes</h3>
+<p>{{ mantenciones_mes_total }}</p>
 </div>
 
 <div class="card">
 <h3>Pendientes</h3>
-<p>0</p>
+
+<p>
+{{ mantenciones | selectattr("mes","equalto",None) | list | length }}
+</p>
+
 </div>
 
 </div>
+
 
 <!-- TABLA -->
 
-<div class="tabla-scroll">
+<div class="form-box">
 
-<table class="tabla-mantenciones">
+<table>
 
 <thead>
 
 <tr>
 
-<th class="col-edificio">Edificio</th>
-<th class="col-info">Mantención anterior</th>
-<th class="col-info">Fecha entrega</th>
-<th class="col-info">Nº Guía</th>
-
-{% for d in range(1,32) %}
-
-<th class="col-dia">
-
-<div class="fecha-vertical">
-{{ "%02d"|format(d) }}/{{ "%02d"|format(mes) }}/{{anio}}
-</div>
-
-</th>
-
-{% endfor %}
+<th>Edificio</th>
+<th>Mantención anterior</th>
+<th>Mantención del mes</th>
+<th>N° Guía</th>
 
 </tr>
 
@@ -190,61 +128,41 @@ border-radius:3px;
 
 <tbody>
 
-{% for e in edificios %}
+{% for m in mantenciones %}
 
 <tr>
 
-<td class="col-edificio">{{e.nombre}}</td>
-
-<!-- MANTENCION ANTERIOR -->
+<td>{{ m.edificio }}</td>
 
 <td>
 
-{{hist_dic.get(e.id,"")}}
+{% if m.anterior %}
+{{ m.anterior }}
+{% else %}
+-
+{% endif %}
 
 </td>
-
-<!-- FECHA ENTREGA -->
 
 <td>
 
-{% if mant_dic.get(e.id) %}
-{{mant_dic[e.id].fecha_entrega}}
+{% if m.mes %}
+{{ m.mes }}
+{% else %}
+-
 {% endif %}
 
 </td>
-
-<!-- NUMERO GUIA -->
 
 <td>
 
-{% if mant_dic.get(e.id) %}
-{{mant_dic[e.id].numero_guia}}
+{% if m.guia %}
+{{ m.guia }}
+{% else %}
+-
 {% endif %}
 
 </td>
-
-<!-- CALENDARIO -->
-
-{% for d in range(1,32) %}
-
-<td class="col-dia">
-
-{% if mant_dic.get(e.id) %}
-
-{% set fecha = mant_dic[e.id].fecha_entrega.split("-") %}
-
-{% if fecha[2]|int == d %}
-
-<div class="marcado"></div>
-
-{% endif %}
-
-{% endif %}
-
-</td>
-
-{% endfor %}
 
 </tr>
 

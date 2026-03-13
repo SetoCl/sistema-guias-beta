@@ -1,0 +1,541 @@
+body{
+margin:0;
+font-family:Arial, sans-serif;
+background:#f4f6f9;
+}
+
+/* LAYOUT */
+
+.layout{
+display:flex;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+position:fixed;
+top:0;
+left:0;
+width:190px;
+height:100vh;
+background:#0f3d6e;
+color:white;
+padding:18px;
+overflow-y:auto;
+}
+
+/* LOGO */
+
+.logo-box{
+text-align:left;
+margin-bottom:10px;
+}
+
+.logo-box img{
+width:150px;
+}
+
+/* NOMBRE EMPRESA */
+
+.empresa{
+text-align:left;
+font-size:18px;
+margin-bottom:20px;
+font-weight:600;
+}
+
+/* LINKS */
+
+.sidebar a{
+display:block;
+padding:8px 10px;
+margin-bottom:6px;
+text-decoration:none;
+color:white;
+border-radius:6px;
+font-weight:500;
+font-size:14px;
+transition:0.2s;
+}
+
+.sidebar a:hover{
+background:#0072CE;
+padding-left:14px;
+}
+
+/* CONTENIDO */
+
+.main{
+margin-left:210px;
+padding:25px;
+width:100%;
+}
+
+/* HEADER */
+
+.header{
+background:white;
+padding:10px 25px;
+margin-bottom:15px;
+border-radius:8px;
+box-shadow:0 2px 6px rgba(0,0,0,0.08);
+}
+
+.titulo-sistema{
+margin-top:0;
+font-size:28px;
+font-weight:700;
+color:#1e2a38;
+}
+
+/* DASHBOARD */
+
+.dashboard{
+display:flex;
+gap:20px;
+flex-wrap:wrap;
+margin-bottom:20px;
+}
+
+.card{
+background:white;
+padding:10px 14px;
+border-radius:10px;
+box-shadow:0 2px 6px rgba(0,0,0,0.1);
+text-align:center;
+min-width:110px;
+}
+
+.card h3{
+font-size:12px;
+margin:0;
+color:#555;
+}
+
+.card p{
+font-size:18px;
+font-weight:bold;
+margin-top:3px;
+color:#0072CE;
+}
+
+/* FORMULARIOS */
+
+.form-box{
+background:white;
+padding:25px;
+border-radius:10px;
+box-shadow:0 2px 8px rgba(0,0,0,0.08);
+margin-bottom:25px;
+}
+
+label{
+font-size:13px;
+font-weight:bold;
+}
+
+input,textarea{
+padding:8px;
+margin-top:5px;
+margin-bottom:12px;
+width:100%;
+border:1px solid #ddd;
+border-radius:5px;
+font-size:14px;
+}
+
+select{
+padding:8px;
+margin-top:5px;
+margin-bottom:12px;
+border:1px solid #ddd;
+border-radius:5px;
+font-size:14px;
+}
+
+textarea{
+min-height:90px;
+}
+
+/* BOTONES */
+
+button{
+background:#0072CE;
+color:white;
+border:none;
+padding:10px 16px;
+border-radius:6px;
+cursor:pointer;
+font-weight:600;
+}
+
+button:hover{
+background:#005fa3;
+}
+
+/* TABLAS */
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th,td{
+padding:10px;
+border-bottom:1px solid #eee;
+text-align:left;
+font-size:14px;
+}
+
+th{
+background:#f1f3f6;
+}
+
+/* ESTADOS */
+
+.estado{
+padding:4px 10px;
+border-radius:6px;
+font-size:12px;
+font-weight:bold;
+color:white;
+}
+
+.abierta{
+background:#28a745;
+}
+
+.cerrada{
+background:#dc3545;
+}
+
+/* GRAFICOS */
+
+.chart-box{
+background:white;
+padding:30px;
+border-radius:10px;
+box-shadow:0 2px 8px rgba(0,0,0,0.08);
+width:70%;
+margin:auto;
+}
+
+/* ======================================================
+   MODULO MANTENCIONES
+====================================================== */
+
+.mantenciones .form-mes{
+display:flex;
+justify-content:flex-start;
+align-items:center;
+gap:10px;
+margin-bottom:15px;
+bottom:15px;
+}
+
+.mantenciones .form-mes select{
+width:120px;
+padding:6px;
+font-size:13px;
+}
+
+.mantenciones .form-mes button{
+padding:6px 12px;
+}
+
+/* SCROLL TABLA */
+
+.mantenciones{
+overflow:hidden;
+}
+
+.mantenciones .tabla-scroll{
+width:100%;
+overflow-x:auto;
+overflow-y:hidden;
+}
+
+/* TABLA */
+
+.mantenciones .tabla-mantenciones{
+min-width:1600px;
+border-collapse:collapse;
+}
+
+/* CABECERA */
+
+.mantenciones .tabla-mantenciones th{
+background:#1f7f7b;
+color:white;
+}
+
+/* COLUMNAS */
+
+.mantenciones .col-edificio{
+min-width:260px;
+text-align:left;
+font-weight:bold;
+padding-left:10px;
+}
+
+.mantenciones .col-info{
+min-width:120px;
+}
+
+.mantenciones .col-dia{
+width:30px;
+height:25px;
+}
+
+/* FECHA VERTICAL */
+
+.mantenciones .fecha-vertical{
+writing-mode:vertical-rl;
+transform:rotate(180deg);
+font-size:10px;
+}
+
+/* MARCA MANTENCION */
+
+.mantenciones .marcado{
+background:#0072CE;
+height:16px;
+border-radius:3px;
+}
+
+/* =====================================
+   COLUMNAS FIJAS
+===================================== */
+
+.mantenciones .tabla-mantenciones th,
+.mantenciones .tabla-mantenciones td{
+white-space:nowrap;
+}
+
+/* EDIFICIO */
+
+.mantenciones .tabla-mantenciones th:nth-child(1),
+.mantenciones .tabla-mantenciones td:nth-child(1){
+position:sticky;
+left:0;
+background:white;
+z-index:5;
+min-width:260px;
+}
+
+/* MANTENCION ANTERIOR */
+
+.mantenciones .tabla-mantenciones th:nth-child(2),
+.mantenciones .tabla-mantenciones td:nth-child(2){
+position:sticky;
+left:260px;
+background:white;
+z-index:5;
+min-width:130px;
+}
+
+/* FECHA ENTREGA */
+
+.mantenciones .tabla-mantenciones th:nth-child(3),
+.mantenciones .tabla-mantenciones td:nth-child(3){
+position:sticky;
+left:390px;
+background:white;
+z-index:5;
+min-width:130px;
+}
+
+/* NUMERO GUIA */
+
+.mantenciones .tabla-mantenciones th:nth-child(4),
+.mantenciones .tabla-mantenciones td:nth-child(4){
+position:sticky;
+left:520px;
+background:white;
+z-index:5;
+min-width:100px;
+}
+
+/* CABECERA FIJA */
+
+.mantenciones .tabla-mantenciones thead th{
+position:sticky;
+top:0;
+z-index:10;
+background:#1f7f7b;
+color:white;
+}
+
+.form-row{
+display:flex;
+gap:15px;
+align-items:center;
+flex-wrap:wrap;
+}
+
+.form-row label{
+min-width:110px;
+}
+
+.form-row input{
+width:180px;
+}
+
+.form-row select{
+width:180px;
+}
+
+.form-row{
+display:flex;
+gap:15px;
+align-items:center;
+flex-wrap:wrap;
+}
+
+.form-row label{
+min-width:110px;
+}
+
+.form-row input{
+width:180px;
+}
+
+.form-row select{
+width:180px;
+}
+
+/* =================================
+FORMULARIO NUEVA GUIA
+================================= */
+
+.form-row{
+display:flex;
+align-items:center;
+gap:10px;
+margin-bottom:10px;
+flex-wrap:wrap;
+}
+
+.form-row label{
+min-width:110px;
+}
+
+.form-row input{
+width:200px;
+}
+
+.form-row select{
+width:200px;
+}
+
+.form-row textarea{
+width:100%;
+}
+
+/* =================================
+SCROLL CALENDARIO
+================================= */
+
+.mantenciones .tabla-scroll{
+overflow-x:auto;
+overflow-y:hidden;
+width:100%;
+border-radius:6px;
+}
+
+.mantenciones .tabla-mantenciones{
+min-width:1600px;
+border-collapse:collapse;
+}
+
+/* =================================
+SCROLL CALENDARIO
+================================= */
+
+.mantenciones .tabla-scroll{
+overflow-x:auto;
+overflow-y:auto;
+width:100%;
+max-height:520px;
+border-radius:6px;
+}
+
+.mantenciones .tabla-mantenciones{
+min-width:1600px;
+border-collapse:collapse;
+}
+
+/* =================================
+HEADER CALENDARIO
+================================= */
+
+.mantenciones .tabla-mantenciones thead th{
+position:sticky;
+top:0;
+z-index:6;
+background:#1f7f7b;
+color:white;
+}
+
+.mantenciones .tabla-mantenciones th:nth-child(-n+4){
+z-index:7;
+background:#1f7f7b;
+}
+
+/* FORM NUEVA GUIA */
+
+.form-group{
+display:flex;
+flex-direction:column;
+margin-bottom:12px;
+}
+
+.form-line{
+display:flex;
+gap:15px;
+align-items:flex-end;
+flex-wrap:wrap;
+margin-bottom:12px;
+}
+
+.form-line .form-group{
+flex:1;
+min-width:180px;
+}
+
+.form-line button{
+margin-bottom:2px;
+}
+
+/* =================================
+ARREGLO FORMULARIO NUEVA GUIA
+================================= */
+
+.form-line{
+display:flex;
+gap:12px;
+align-items:center;
+flex-wrap:wrap;
+margin-bottom:12px;
+}
+
+.form-line label{
+min-width:90px;
+}
+
+.form-line select,
+.form-line input{
+width:200px;
+}
+
+.form-line .direccion{
+flex-basis:100%;
+}
+
+.form-line .tecnico{
+width:200px;
+}
+
+.form-line button{
+height:34px;
+}
