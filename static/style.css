@@ -266,3 +266,14 @@ width:100%;
 .form-line button{
 height:34px;
 }
+
+/* =========================
+ESTADO DE GUIA
+========================= */
+
+.estado.observada{
+background:#ff9800;
+color:white;
+padding:4px 8px;
+border-radius:4px;
+}

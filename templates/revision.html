@@ -11,35 +11,23 @@
 
 <body>
 
-<div class="layout">
-
-<div class="main">
-
-<div class="header">
-<h2>Revisión de Trabajo</h2>
-</div>
-
 <div class="form-box">
 
-<h3>Guía N° {{ guia.numero_guia }}</h3>
+<h2>Guía de Servicio N° {{ guia.numero_guia }}</h2>
 
-<p><strong>Fecha:</strong> {{ guia.fecha }}</p>
-
-<p><strong>Cliente:</strong> {{ guia.cliente }}</p>
-
-<p><strong>Dirección:</strong> {{ guia.direccion }}</p>
-
-<p><strong>Property:</strong> {{ guia.property }}</p>
-
-<p><strong>Técnicos:</strong> {{ guia.tecnicos }}</p>
-
-<p><strong>Tipo de trabajo:</strong> {{ guia.tipo_trabajo }}</p>
-
-<p><strong>Estado:</strong> {{ guia.estado }}</p>
+<p><b>Fecha:</b> {{ guia.fecha }}</p>
+<p><b>Cliente:</b> {{ guia.cliente }}</p>
+<p><b>Dirección:</b> {{ guia.direccion }}</p>
+<p><b>Property:</b> {{ guia.property }}</p>
 
 <hr>
 
-<h3>Descripción del Servicio</h3>
+<p><b>Técnicos:</b> {{ guia.tecnicos }}</p>
+<p><b>Tipo de trabajo:</b> {{ guia.tipo_trabajo }}</p>
+
+<hr>
+
+<h3>Descripción del trabajo</h3>
 
 <p>{{ guia.descripcion }}</p>
 
@@ -51,35 +39,30 @@
 
 {% endif %}
 
-<br>
+<hr>
 
-{% if guia.estado != "CERRADA" %}
+<form method="POST" action="/resolver_revision/{{ guia.token_revision }}">
 
-<a href="/aceptar/{{ guia.token_revision }}">
-<button style="font-size:18px;padding:10px 20px;">
-✔ Aceptar trabajo
-</button>
-</a>
+<label>Comentario del Property</label>
 
-{% else %}
-
-<h3>✔ Este trabajo ya fue aprobado.</h3>
-
-{% endif %}
+<textarea name="comentario_property"
+style="width:100%;height:120px;"></textarea>
 
 <br><br>
 
-<a href="/">
-<button style="font-size:16px;padding:10px 20px;">
-⬅ Volver al inicio
+<button name="accion" value="aprobar">
+Aprobar trabajo
 </button>
-</a>
 
-</div>
+<button name="accion" value="observar"
+style="background:#d32f2f;color:white;">
+Solicitar corrección
+</button>
 
-</div>
+</form>
 
 </div>
 
 </body>
+
 </html>

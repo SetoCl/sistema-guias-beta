@@ -29,6 +29,11 @@ Abiertas
 Cerradas
 </option>
 
+<option value="OBSERVADA"
+{% if request.args.get("estado")=="OBSERVADA" %}selected{% endif %}>
+Observadas
+</option>
+
 </select>
 
 <button type="submit">Filtrar</button>
@@ -57,6 +62,7 @@ Cerradas
 <th>Estado</th>
 <th>Editar</th>
 <th>PDF</th>
+<th>Eliminar</th>
 
 </tr>
 
@@ -79,45 +85,51 @@ Cerradas
 <td>{{ g.tecnicos if g.tecnicos else "-" }}</td>
 
 
-<!-- ESTADO -->
-
 <td>
 
 {% if g.estado == "ABIERTA" %}
 
 <span class="estado abierta">ABIERTA</span>
 
+{% elif g.estado == "OBSERVADA" %}
+
+<span class="estado observada">OBSERVADA</span>
+
 {% else %}
 
-<span class="estado cerrada">
-{{ g.estado if g.estado else "CERRADA" }}
-</span>
+<span class="estado cerrada">CERRADA</span>
 
 {% endif %}
 
 </td>
 
 
-<!-- EDITAR -->
-
 <td>
 
 <a href="/?editar={{ g.id }}">
-
 <button>Editar</button>
-
 </a>
 
 </td>
 
 
-<!-- PDF -->
-
 <td>
 
 <a href="/pdf/{{ g.id }}" target="_blank">
-
 <button>PDF</button>
+</a>
+
+</td>
+
+
+<td>
+
+<a href="/eliminar_guia/{{ g.id }}"
+onclick="return confirm('¿Seguro que deseas eliminar esta guía?')">
+
+<button style="background:#c62828;color:white;">
+Eliminar
+</button>
 
 </a>
 

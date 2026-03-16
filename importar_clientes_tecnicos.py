@@ -41,8 +41,11 @@ def importar():
                 continue
 
             nombre = fila[0]
-            property = fila[1]
-            direccion = fila[2]
+            direccion = fila[1]
+            property = fila[2]
+            apellido = fila[3]
+            correo = fila[4]
+            telefono = fila[5]
 
             if not nombre:
                 continue
@@ -54,8 +57,19 @@ def importar():
 
             if not existe:
                 conn.execute(
-                    "INSERT INTO clientes (nombre, direccion, property) VALUES (?, ?, ?)",
-                    (nombre, direccion or "", property or "")
+                    """
+                    INSERT INTO clientes
+                    (nombre, direccion, property, apellido, correo_electronico, telefono_movil)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        nombre,
+                        direccion or "",
+                        property or "",
+                        apellido or "",
+                        correo or "",
+                        telefono or ""
+                    )
                 )
                 clientes_creados += 1
 

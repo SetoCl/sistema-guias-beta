@@ -35,8 +35,9 @@ def init_db():
             nombre TEXT UNIQUE,
             direccion TEXT,
             property TEXT,
-            email_property TEXT
-        )
+            correo_electronico TEXT,
+            telefono_movil TEXT
+);
     """)
 
     conn.execute("""
@@ -139,33 +140,52 @@ def index():
             conn.commit()
 
             guia = conn.execute("""
-                SELECT numero_guia, token_revision
-                FROM guias
-                WHERE id=?
+                SELECT g.numero_guia, g.token_revision, c.correo_electronico
+                FROM guias g
+                LEFT JOIN clientes c ON g.cliente_id = c.id
+                WHERE g.id=?
             """,(guia_id,)).fetchone()
 
             conn.close()
 
             link = request.host_url + "revision/" + guia["token_revision"]
 
-            destinatarios = "psalinas@igpaseguridad.cl;ptapia@igpaseguridad.cl"
+            # ==========================
+            # DESTINATARIOS
+            # ==========================
+
+            destinatario = guia["correo_electronico"] or ""
+
+            cc = "psalinas@igpaseguridad.cl;ptapia@igpaseguridad.cl"
+
+            # ==========================
+            # ASUNTO
+            # ==========================
 
             asunto = quote(f"Revisión de trabajo - Guía {guia['numero_guia']}")
 
+            # ==========================
+            # CUERPO
+            # ==========================
+
             cuerpo = quote(f"""
-Estimados,
+            Estimados,
 
-La guía N° {guia['numero_guia']} ha sido actualizada.
+            La guía N° {guia['numero_guia']} ha sido registrada en el sistema.
 
-Para revisar y aprobar el trabajo utilicen el siguiente enlace:
+            Para revisar y aprobar el trabajo utilicen el siguiente enlace:
 
-{link}
+            {link}
 
-Saludos
-Fibratel
-""")
+            Saludos
+            Fibratel
+            """)
 
-            mailto = f"mailto:{destinatarios}?subject={asunto}&body={cuerpo}"
+            # ==========================
+            # MAILTO
+            # ==========================
+
+            mailto = f"mailto:{destinatario}?cc={cc}&subject={asunto}&body={cuerpo}"
 
             return redirect(mailto)
 
@@ -333,22 +353,44 @@ def revision(token):
     return render_template("revision.html", guia=guia)
 
 
-@app.route("/aceptar/<token>")
-def aceptar_trabajo(token):
+@app.route("/resolver_revision/<token>", methods=["POST"])
+def resolver_revision(token):
+
+    comentario = request.form.get("comentario_property")
+    accion = request.form.get("accion")
 
     conn = get_db()
 
-    conn.execute("""
-        UPDATE guias
-        SET estado='CERRADA'
-        WHERE token_revision=?
-    """, (token,))
+    if accion == "aprobar":
+
+        conn.execute("""
+            UPDATE guias
+            SET estado='CERRADA',
+                comentario_property=?
+            WHERE token_revision=?
+        """, (comentario, token))
+
+        mensaje = "Trabajo aprobado. La guía ha sido cerrada."
+
+    elif accion == "observar":
+
+        conn.execute("""
+            UPDATE guias
+            SET estado='OBSERVADA',
+                comentario_property=?
+            WHERE token_revision=?
+        """, (comentario, token))
+
+        mensaje = "Se ha enviado una observación al servicio."
+
+    else:
+
+        mensaje = "Acción no válida."
 
     conn.commit()
     conn.close()
 
-    return "Trabajo aceptado. La guía ha sido cerrada."
-
+    return mensaje
 
 # =========================================================
 # PDF
@@ -477,8 +519,11 @@ def generar_pdf(guia_id):
 
     # FIRMAS
     firma = Table([
-        ["__________________________", "__________________________"],
-        ["Firma Técnico", "Firma Cliente / Property"]
+        [""],
+        [""],
+        [""],
+        ["____________________________________________________"],
+        ["Firma Cliente / Property"]
     ], colWidths=[8*cm,8*cm])
 
     firma.setStyle([
@@ -519,18 +564,44 @@ def api_cliente(cliente_id):
     conn = get_db()
 
     cliente = conn.execute(
-        "SELECT direccion, property FROM clientes WHERE id=?",
+        """
+        SELECT direccion,
+               property,
+               apellido,
+               correo_electronico,
+               telefono_movil
+        FROM clientes
+        WHERE id=?
+        """,
         (cliente_id,)
     ).fetchone()
 
     conn.close()
 
     if cliente:
-        return jsonify(dict(cliente))
+
+        nombre_property = ""
+
+        if cliente["property"]:
+            nombre_property = cliente["property"]
+
+        if cliente["apellido"]:
+            nombre_property += " " + cliente["apellido"]
+
+        return jsonify({
+            "direccion": cliente["direccion"],
+            "property": nombre_property,
+            "correo": cliente["correo_electronico"],
+            "telefono": cliente["telefono_movil"]
+        })
+
     else:
+
         return jsonify({
             "direccion": "",
-            "property": ""
+            "property": "",
+            "correo": "",
+            "telefono": ""
         })
 
 # =========================================================
@@ -563,6 +634,18 @@ def reportes():
     conn.close()
 
     return render_template("reportes.html", guias=guias)
+
+@app.route("/eliminar_guia/<int:id>")
+def eliminar_guia(id):
+
+    conn = get_db()
+
+    conn.execute("DELETE FROM guias WHERE id=?", (id,))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/reportes")
 
 # =========================================================
 # MANTENCIONES

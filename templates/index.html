@@ -106,11 +106,37 @@ readonly>
 
 <div class="form-group">
 
-<label>Property</label>
+<label>👤 Property</label>
 
 <input type="text"
 id="property"
 value="{{ guia.property if guia else '' }}"
+readonly>
+
+</div>
+
+
+<!-- CORREO PROPERTY -->
+
+<div class="form-group">
+
+<label>📧 Correo electrónico</label>
+
+<input type="text"
+id="correo_property"
+readonly>
+
+</div>
+
+
+<!-- TELEFONO PROPERTY -->
+
+<div class="form-group">
+
+<label>📱 Teléfono móvil</label>
+
+<input type="text"
+id="telefono_property"
 readonly>
 
 </div>
@@ -245,6 +271,8 @@ if(!clienteId){
 
 document.getElementById("direccion").value="";
 document.getElementById("property").value="";
+document.getElementById("correo_property").value="";
+document.getElementById("telefono_property").value="";
 return;
 
 }
@@ -257,6 +285,8 @@ fetch("/api/cliente/"+clienteId)
 
 document.getElementById("direccion").value=data.direccion||"";
 document.getElementById("property").value=data.property||"";
+document.getElementById("correo_property").value=data.correo||"";
+document.getElementById("telefono_property").value=data.telefono||"";
 
 });
 
