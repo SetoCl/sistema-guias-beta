@@ -6,6 +6,27 @@
 <h2>Actividades por Edificio</h2>
 </div>
 
+<!-- FILTRO -->
+<div class="form-box">
+
+<form method="GET" style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+
+<label>Desde</label>
+<input type="date" name="inicio"
+value="{{ inicio or '' }}"
+style="width:150px;">
+
+<label>Hasta</label>
+<input type="date" name="fin"
+value="{{ fin or '' }}"
+style="width:150px;">
+
+<button type="submit">Filtrar</button>
+
+</form>
+
+</div>
+
 <div class="dashboard">
 
 <div class="card">

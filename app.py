@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify, send_file
+from flask import Flask, render_template, request, redirect, url_for, jsonify, send_file, session
 import sqlite3
 from datetime import date, datetime
 import os
@@ -13,6 +13,7 @@ from reportlab.lib.units import cm
 from reportlab.lib import colors
 
 app = Flask(__name__)
+app.secret_key = "clave_super_secreta"
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATABASE = os.path.join(BASE_DIR, "database.db")
@@ -29,6 +30,69 @@ def init_db():
 
     conn = get_db()
 
+# ------------ login ------------
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+
+    if request.method == "POST":
+
+        usuario = request.form.get("usuario")
+        password = request.form.get("password")
+
+        conn = get_db()
+
+        user = conn.execute(
+            "SELECT * FROM usuarios WHERE usuario=? AND password=?",
+            (usuario, password)
+        ).fetchone()
+
+        conn.close()
+
+        if user:
+            session["usuario"] = user["usuario"]
+            session["rol"] = user["rol"]
+            return redirect("/")
+        else:
+            return "Credenciales incorrectas"
+
+    return render_template("login.html")
+
+# ------------ logout ------------
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/login")
+
+# ------------ proteccion ------------
+
+@app.before_request
+def proteger_sistema():
+
+    # rutas que NO requieren login
+    rutas_libres = [
+        "login",
+        "revision",
+        "resolver_revision",
+        "static"
+    ]
+
+    # si no hay endpoint (evita errores raros)
+    if request.endpoint is None:
+        return
+
+    # si la ruta no es libre → exigir login
+    if request.endpoint not in rutas_libres:
+        if "usuario" not in session:
+            return redirect("/login")
+
+# ================ roles ==============
+
+def solo_admin():
+    return session.get("rol") == "admin"
+
+# ================= CLIENTES =================
     conn.execute("""
         CREATE TABLE IF NOT EXISTS clientes (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -37,9 +101,10 @@ def init_db():
             property TEXT,
             correo_electronico TEXT,
             telefono_movil TEXT
-);
+        );
     """)
 
+    # ================= TECNICOS =================
     conn.execute("""
         CREATE TABLE IF NOT EXISTS tecnicos (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -47,6 +112,7 @@ def init_db():
         )
     """)
 
+    # ================= GUIAS =================
     conn.execute("""
         CREATE TABLE IF NOT EXISTS guias (
 
@@ -69,28 +135,52 @@ def init_db():
         )
     """)
 
+    # ================= MANTENCIONES =================
     conn.execute("""
+        CREATE TABLE IF NOT EXISTS mantenciones (
 
-    CREATE TABLE IF NOT EXISTS mantenciones (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            cliente_id INTEGER,
+            fecha_entrega TEXT,
+            numero_guia INTEGER,
 
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-    cliente_id INTEGER,
-    fecha_entrega TEXT,
-    numero_guia INTEGER,
-
-    mes INTEGER,
-    anio INTEGER
-
-    )
-
+            mes INTEGER,
+            anio INTEGER
+        )
     """)
+
+    # ================= USUARIOS =================
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS usuarios (
+
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            usuario TEXT UNIQUE,
+            password TEXT,
+            rol TEXT
+        )
+    """)
+
+    # ================= USUARIOS INICIALES =================
+    usuarios = [
+        ("Seto", "Skaiba@@17", "admin"),
+        ("Patricio", "Salinas2111", "admin"),
+        ("Tecnico", "IGPA5312.", "tecnico")
+    ]
+
+    for u in usuarios:
+        existe = conn.execute(
+            "SELECT id FROM usuarios WHERE usuario=?",
+            (u[0],)
+        ).fetchone()
+
+        if not existe:
+            conn.execute(
+                "INSERT INTO usuarios (usuario, password, rol) VALUES (?, ?, ?)",
+                u
+            )
 
     conn.commit()
     conn.close()
-
-
-init_db()
 
 
 # =========================================================
@@ -610,7 +700,12 @@ def api_cliente(cliente_id):
 @app.route("/reportes")
 def reportes():
 
+    if not solo_admin():
+        return "Acceso no autorizado"
+
     estado = request.args.get("estado")
+    inicio = request.args.get("inicio")
+    fin = request.args.get("fin")
 
     conn = get_db()
 
@@ -627,16 +722,33 @@ def reportes():
         query += " AND g.estado = ?"
         params.append(estado)
 
+    if inicio:
+        query += " AND g.fecha >= ?"
+        params.append(inicio)
+
+    if fin:
+        query += " AND g.fecha <= ?"
+        params.append(fin)
+
     query += " ORDER BY g.numero_guia DESC"
 
     guias = conn.execute(query, params).fetchall()
 
     conn.close()
 
-    return render_template("reportes.html", guias=guias)
+    return render_template(
+        "reportes.html",
+        guias=guias,
+        inicio=inicio,
+        fin=fin,
+        estado=estado
+    )
 
 @app.route("/eliminar_guia/<int:id>")
 def eliminar_guia(id):
+
+    if solo_admin():
+        return solo_admin()
 
     conn = get_db()
 
@@ -652,6 +764,9 @@ def eliminar_guia(id):
 # =========================================================
 @app.route("/mantenciones")
 def mantenciones():
+
+    if not solo_admin():
+        return "Acceso no autorizado"
 
     mes = int(request.args.get("mes", date.today().month))
     anio = int(request.args.get("anio", date.today().year))
@@ -809,6 +924,9 @@ def mantenciones():
 @app.route("/estadisticas_edificio")
 def estadisticas_edificio():
 
+    if not solo_admin():
+        return "Acceso no autorizado"
+
     inicio = request.args.get("inicio")
     fin = request.args.get("fin")
 
@@ -869,6 +987,9 @@ def estadisticas_edificio():
 # =========================================================
 @app.route("/estadisticas")
 def estadisticas():
+
+    if not solo_admin():
+        return "Acceso no autorizado"
 
     inicio = request.args.get("inicio")
     fin = request.args.get("fin")

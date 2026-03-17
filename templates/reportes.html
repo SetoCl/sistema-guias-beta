@@ -11,12 +11,11 @@
 
 <div class="form-box">
 
-<form method="GET">
+<form method="GET" style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
 
 <label>Estado</label>
 
 <select name="estado">
-
 <option value="">Todos</option>
 
 <option value="ABIERTA"
@@ -33,8 +32,17 @@ Cerradas
 {% if request.args.get("estado")=="OBSERVADA" %}selected{% endif %}>
 Observadas
 </option>
-
 </select>
+
+<label>Desde</label>
+<input type="date" name="inicio"
+value="{{ request.args.get('inicio','') }}"
+style="width:150px;">
+
+<label>Hasta</label>
+<input type="date" name="fin"
+value="{{ request.args.get('fin','') }}"
+style="width:150px;">
 
 <button type="submit">Filtrar</button>
 
